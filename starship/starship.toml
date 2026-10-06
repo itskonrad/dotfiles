@@ -1,5 +1,9 @@
 "$schema" = 'https://starship.rs/config-schema.json'
 
+# /mnt/c (Windows drives) is slow over WSL's 9P mount; defaults are 30ms / 500ms
+scan_timeout = 200
+command_timeout = 1000
+
 format = """
 $username\
 $hostname\
