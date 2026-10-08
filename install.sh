@@ -26,8 +26,7 @@ link "$DOT/tmux/tmux.conf"           ~/.tmux.conf
 
 if grep -qi microsoft /proc/version; then
     win() { wslpath "$(cmd.exe /c "echo %$1%" 2>/dev/null | tr -d '\r')"; }
-    mkdir -p "$(win APPDATA)/alacritty"
-    cp "$DOT/alacritty/alacritty.toml" "$(win APPDATA)/alacritty/alacritty.toml"
+    cp -r "$DOT/alacritty" "$(win APPDATA)/"
 
     FONTS="$(win LOCALAPPDATA)/Microsoft/Windows/Fonts"
     if [ ! -e "$FONTS/JetBrainsMono-Regular.ttf" ]; then
