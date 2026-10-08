@@ -30,12 +30,13 @@ style = "bright-black"
 [git_status]
 format = "[[(*$conflicted$untracked$modified$staged$renamed$deleted)](218) ($ahead_behind$stashed)]($style)"
 style = "cyan"
-conflicted = "​"
-untracked = "​"
-modified = "​"
-staged = "​"
-renamed = "​"
-deleted = "​"
+# non-empty but invisible so the * shows; zero-width spaces desync fish's cursor
+conflicted = "\u001b\\[39m"
+untracked = "\u001b\\[39m"
+modified = "\u001b\\[39m"
+staged = "\u001b\\[39m"
+renamed = "\u001b\\[39m"
+deleted = "\u001b\\[39m"
 stashed = "≡"
 
 [git_state]
