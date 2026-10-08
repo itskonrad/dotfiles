@@ -20,10 +20,10 @@ decorations_theme_variant = "Dark"
 history = 50000
 
 [font]
-normal = { family = "Cascadia Mono", style = "Regular" }
-bold = { family = "Cascadia Mono", style = "Bold" }
-italic = { family = "Cascadia Mono", style = "Italic" }
-bold_italic = { family = "Cascadia Mono", style = "Bold Italic" }
+normal = { family = "Geist Mono", style = "Regular" }
+bold = { family = "Geist Mono", style = "Bold" }
+italic = { family = "Geist Mono", style = "Italic" }
+bold_italic = { family = "Geist Mono", style = "Bold Italic" }
 size = 11
 offset = { x = 0, y = 1 }
 
@@ -38,6 +38,10 @@ save_to_clipboard = true
 
 [mouse]
 hide_when_typing = true
+
+[[mouse.bindings]]
+mouse = "Left"
+action = "PasteSelection"
 
 [terminal]
 osc52 = "CopyPaste"
