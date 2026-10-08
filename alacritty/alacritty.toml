@@ -39,6 +39,10 @@ save_to_clipboard = true
 [mouse]
 hide_when_typing = true
 
+[[mouse.bindings]]
+mouse = "Left"
+action = "PasteSelection"
+
 [terminal]
 osc52 = "CopyPaste"
 
