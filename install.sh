@@ -1,14 +1,22 @@
 #!/usr/bin/env bash
-# Bootstrap fish + starship + tmux on a fresh Ubuntu/WSL box and symlink configs.
+# Bootstrap fish + starship + tmux on a fresh Ubuntu/WSL box (or an already set-up Mac) and symlink configs.
 set -euo pipefail
 DOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+OS="$(uname -s)"
 
-command -v fish >/dev/null || { sudo apt-get update && sudo apt-get install -y fish; }
-command -v tmux >/dev/null || { sudo apt-get update && sudo apt-get install -y tmux; }
-command -v starship >/dev/null || {
-    mkdir -p ~/.local/bin
-    curl -sS https://starship.rs/install.sh | sh -s -- -y -b ~/.local/bin
-}
+if [ "$OS" = Darwin ]; then
+    # macOS: tools are installed by hand, just check they're there
+    for t in fish tmux starship; do
+        command -v "$t" >/dev/null || { echo "$t not found; install it first" >&2; exit 1; }
+    done
+else
+    command -v fish >/dev/null || { sudo apt-get update && sudo apt-get install -y fish; }
+    command -v tmux >/dev/null || { sudo apt-get update && sudo apt-get install -y tmux; }
+    command -v starship >/dev/null || {
+        mkdir -p ~/.local/bin
+        curl -sS https://starship.rs/install.sh | sh -s -- -y -b ~/.local/bin
+    }
+fi
 
 link() {  # link <src> <dest>, backing up any existing real file
     mkdir -p "$(dirname "$2")"
@@ -24,14 +32,17 @@ link "$DOT/tmux/tmux.conf"           ~/.tmux.conf
 [ -d ~/.tmux/plugins/tpm ] || git clone -q https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 ~/.tmux/plugins/tpm/bin/install_plugins >/dev/null
 
-if grep -qi microsoft /proc/version; then
+if grep -qsi microsoft /proc/version; then
     cp -r "$DOT/alacritty" "$(wslpath "$(cmd.exe /c 'echo %APPDATA%' 2>/dev/null | tr -d '\r')")/"
 fi
 
 # fisher + plugins from fish_plugins
 fish -c 'type -q fisher || curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source && fisher update'
 
-FISH="$(command -v fish)"
-grep -qx "$FISH" /etc/shells || echo "$FISH" | sudo tee -a /etc/shells >/dev/null
-[ "$(getent passwd "$USER" | cut -d: -f7)" = "$FISH" ] || sudo chsh -s "$FISH" "$USER"
+# login shell is left alone on macOS
+if [ "$OS" != Darwin ]; then
+    FISH="$(command -v fish)"
+    grep -qx "$FISH" /etc/shells || echo "$FISH" | sudo tee -a /etc/shells >/dev/null
+    [ "$(getent passwd "$USER" | cut -d: -f7)" = "$FISH" ] || sudo chsh -s "$FISH" "$USER"
+fi
 echo "Done. Open a new terminal (or 'wsl --terminate <distro>') to start in fish."
