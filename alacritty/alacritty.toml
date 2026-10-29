@@ -1,3 +1,4 @@
+# Linux only (macOS uses Ghostty); linked to ~/.config/alacritty/alacritty.toml
 [general]
 import = ["themes/vesper.toml"]
 
@@ -13,17 +14,16 @@ dimensions = { columns = 124, lines = 36 }
 padding = { x = 10, y = 8 }
 dynamic_padding = true
 opacity = 0.97
-title = "WSL · Ubuntu 24.04"
 decorations_theme_variant = "Dark"
 
 [scrolling]
 history = 50000
 
 [font]
-normal = { family = "Geist Mono", style = "Regular" }
-bold = { family = "Geist Mono", style = "Bold" }
-italic = { family = "Geist Mono", style = "Italic" }
-bold_italic = { family = "Geist Mono", style = "Bold Italic" }
+normal = { family = "JetBrains Mono", style = "Regular" }
+bold = { family = "JetBrains Mono", style = "Bold" }
+italic = { family = "JetBrains Mono", style = "Italic" }
+bold_italic = { family = "JetBrains Mono", style = "Bold Italic" }
 size = 11
 offset = { x = 0, y = 1 }
 
@@ -39,20 +39,12 @@ save_to_clipboard = true
 [mouse]
 hide_when_typing = true
 
-[[mouse.bindings]]
-mouse = "Left"
-action = "PasteSelection"
-
 [terminal]
 osc52 = "CopyPaste"
 
 [terminal.shell]
-program = "C:\\Windows\\System32\\wsl.exe"
-args = [
-  "--distribution", "Ubuntu-24.04",
-  "--cd", "~",
-  "--exec", "/usr/bin/fish", "--login",
-]
+program = "fish"
+args = ["--login"]
 
 [[keyboard.bindings]]
 key = "F11"

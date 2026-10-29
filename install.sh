@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Bootstrap fish + starship + tmux on a fresh Ubuntu/WSL box (or an already set-up Mac) and symlink configs.
+# Bootstrap fish + starship + tmux on a fresh Ubuntu box (or an already set-up Mac) and symlink configs.
 set -euo pipefail
 DOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 OS="$(uname -s)"
@@ -28,12 +28,15 @@ link "$DOT/fish/config.fish"         ~/.config/fish/config.fish
 link "$DOT/fish/fish_plugins"        ~/.config/fish/fish_plugins
 link "$DOT/starship/starship.toml"   ~/.config/starship.toml
 link "$DOT/tmux/tmux.conf"           ~/.tmux.conf
+link "$DOT/ghostty/config.ghostty"   ~/.config/ghostty/config.ghostty
 
 [ -d ~/.tmux/plugins/tpm ] || git clone -q https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 ~/.tmux/plugins/tpm/bin/install_plugins >/dev/null
 
-if grep -qsi microsoft /proc/version; then
-    cp -r "$DOT/alacritty" "$(wslpath "$(cmd.exe /c 'echo %APPDATA%' 2>/dev/null | tr -d '\r')")/"
+# Alacritty is Linux-only; macOS uses Ghostty
+if [ "$OS" = Linux ]; then
+    link "$DOT/alacritty/alacritty.toml" ~/.config/alacritty/alacritty.toml
+    link "$DOT/alacritty/themes"         ~/.config/alacritty/themes
 fi
 
 # fisher + plugins from fish_plugins
@@ -45,4 +48,4 @@ if [ "$OS" != Darwin ]; then
     grep -qx "$FISH" /etc/shells || echo "$FISH" | sudo tee -a /etc/shells >/dev/null
     [ "$(getent passwd "$USER" | cut -d: -f7)" = "$FISH" ] || sudo chsh -s "$FISH" "$USER"
 fi
-echo "Done. Open a new terminal (or 'wsl --terminate <distro>') to start in fish."
+echo "Done. Open a new terminal to start in fish."

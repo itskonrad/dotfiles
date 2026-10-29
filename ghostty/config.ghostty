@@ -1,0 +1,11 @@
+# Ghostty config — only overrides; see `ghostty +show-config --default --docs`
+# Reload with ctrl+shift+, (Linux) / cmd+shift+, (macOS)
+
+theme = Catppuccin Mocha
+
+# copy selection to the system clipboard too, not just primary
+copy-on-select = clipboard
+mouse-hide-while-typing = true
+
+# Linux: server-side decorations don't show up on KDE Plasma (Wayland), so use GTK ones; macOS ignores this
+window-decoration = client
