@@ -16,6 +16,7 @@ else
         mkdir -p ~/.local/bin
         curl -sS https://starship.rs/install.sh | sh -s -- -y -b ~/.local/bin
     }
+    command -v spectacle >/dev/null || { sudo apt-get update && sudo apt-get install -y kde-spectacle; }
 fi
 
 link() {  # link <src> <dest>, backing up any existing real file
