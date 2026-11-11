@@ -34,12 +34,6 @@ link "$DOT/ghostty/config.ghostty"   ~/.config/ghostty/config.ghostty
 [ -d ~/.tmux/plugins/tpm ] || git clone -q https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 ~/.tmux/plugins/tpm/bin/install_plugins >/dev/null
 
-# Alacritty is Linux-only; macOS uses Ghostty
-if [ "$OS" = Linux ]; then
-    link "$DOT/alacritty/alacritty.toml" ~/.config/alacritty/alacritty.toml
-    link "$DOT/alacritty/themes"         ~/.config/alacritty/themes
-fi
-
 # fisher + plugins from fish_plugins
 fish -c 'type -q fisher || curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source && fisher update'
 
