@@ -1,23 +1,11 @@
 #!/usr/bin/env bash
-# Bootstrap fish + starship + tmux on a fresh Ubuntu box (or an already set-up Mac) and symlink configs.
+# Symlink configs and bootstrap tmux/fish plugins on Linux or macOS; the tools themselves must already be installed.
 set -euo pipefail
 DOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-OS="$(uname -s)"
 
-if [ "$OS" = Darwin ]; then
-    # macOS: tools are installed by hand, just check they're there
-    for t in fish tmux starship; do
-        command -v "$t" >/dev/null || { echo "$t not found; install it first" >&2; exit 1; }
-    done
-else
-    command -v fish >/dev/null || { sudo apt-get update && sudo apt-get install -y fish; }
-    command -v tmux >/dev/null || { sudo apt-get update && sudo apt-get install -y tmux; }
-    command -v starship >/dev/null || {
-        mkdir -p ~/.local/bin
-        curl -sS https://starship.rs/install.sh | sh -s -- -y -b ~/.local/bin
-    }
-    command -v spectacle >/dev/null || { sudo apt-get update && sudo apt-get install -y kde-spectacle; }
-fi
+for t in fish tmux starship git curl; do
+    command -v "$t" >/dev/null || { echo "$t not found; install it first" >&2; exit 1; }
+done
 
 link() {  # link <src> <dest>, backing up any existing real file
     mkdir -p "$(dirname "$2")"
@@ -37,10 +25,13 @@ link "$DOT/ghostty/config.ghostty"   ~/.config/ghostty/config.ghostty
 # fisher + plugins from fish_plugins
 fish -c 'type -q fisher || curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source && fisher update'
 
-# login shell is left alone on macOS
-if [ "$OS" != Darwin ]; then
+echo "Done."
+
+# $SHELL is the login shell, unlike the shell running this script
+if [ "$(basename "${SHELL:-}")" != fish ]; then
     FISH="$(command -v fish)"
-    grep -qx "$FISH" /etc/shells || echo "$FISH" | sudo tee -a /etc/shells >/dev/null
-    [ "$(getent passwd "$USER" | cut -d: -f7)" = "$FISH" ] || sudo chsh -s "$FISH" "$USER"
+    echo
+    echo "Your login shell is ${SHELL:-unset}, not fish. To change it, run:"
+    echo "  grep -qx $FISH /etc/shells || echo $FISH | sudo tee -a /etc/shells"
+    echo "  chsh -s $FISH"
 fi
-echo "Done. Open a new terminal to start in fish."
